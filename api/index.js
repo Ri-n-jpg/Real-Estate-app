@@ -24,6 +24,14 @@ app.use(express.json());
 // Routes
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
+app.use((err,req,res,next)=>{
+  const statusCode=err.statusCode||500;
+  const message=err.message|| 'Internal Server Error';
+  return res.status(statusCode).json({
+success:false,
+statusCode,
+message
+})});
 
 const PORT = process.env.PORT || 3000;
 
@@ -33,4 +41,4 @@ mongoose.connect(process.env.MONGO)
     console.log("✅ MongoDB Connected Successfully");
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   })
-  .catch((err) => console.error("❌ MongoDB Connection Failed:", err));
+  .catch((err) => console.log("not connected"));
